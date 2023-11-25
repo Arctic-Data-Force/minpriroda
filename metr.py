@@ -1,7 +1,8 @@
 import pandas as pd
 
 df1 = pd.read_csv('result.csv')
-df2 = df1
+df2 = pd.read_csv('predict.csv')
+
 
 def check_row(row1, row2):
     def check_quantity(qty1, qty2):
@@ -29,12 +30,15 @@ def check_row(row1, row2):
 correct_count = 0
 incorrect_count = 0
 
-for index, (row1, row2) in enumerate(zip(df1.iterrows(), df2.iterrows())):
-    idx1, data1 = row1
-    idx2, data2 = row2
-    if check_row(row1[1], row2[1]):
-        correct_count += 1
-    else:
-        incorrect_count += 1
+for index, row1 in df1.iterrows():
+    file_name = row1['file_name']
+    corresponding_row_df2 = df2[df2['file_name'] == file_name]
+
+    if not corresponding_row_df2.empty:
+        row2 = corresponding_row_df2.iloc[0] 
+        if check_row(row1, row2):
+            correct_count += 1
+        else:
+            incorrect_count += 1
 
 print(f"Ок: {correct_count}\nНе ок: {incorrect_count}")
